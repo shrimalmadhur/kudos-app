@@ -1,4 +1,4 @@
-import { FC, useContext, useEffect, useRef, useState } from 'react';
+import { Dispatch, FC, useContext, useEffect, useRef, useState } from 'react';
 import axios from "axios";
 import React from 'react'
 import { ethers, JsonRpcSigner } from 'ethers'
@@ -12,10 +12,12 @@ import { useConnectWallet } from '@web3-onboard/react';
 type Props = {
   token: TokenResponse
   wallet?: WalletState
+  setTxHashDispatch: Dispatch<string>
 }
 
 const contractAddress = process.env.NEXT_PUBLIC_KUDOS_CONTRACT || ""
 const chainType = process.env.NEXT_PUBLIC_CHAIN || ""
+const etherScanURL = process.env.NEXT_PUBLIC_ETHERSCAN_URL;
 
 const NftCard: FC<Props> = (data) => {
   const [showModal, setShowModal] = useState(false);
@@ -44,11 +46,19 @@ const NftCard: FC<Props> = (data) => {
         signer = await provider.getSigner();
     }
 
+    var address = mintAddress || null;
+    if (mintAddress.endsWith('.eth')) {
+      address = await provider.resolveName(mintAddress);
+    }
+
     try {
       let nftContract = new ethers.Contract(contractAddress, erc1155abi, signer);
-      const tx = await nftContract["mint(address,uint256)"](mintAddress, data.token.tokenId, { gasLimit: 100000, value: ethers.parseEther('0.005') })
+      const tx = await nftContract["mint(address,uint256)"](address, data.token.tokenId, { gasLimit: 100000, value: ethers.parseEther('0.005') })
+      const txURL = etherScanURL + "/tx/" + tx.hash;
+      data.setTxHashDispatch(txURL);
+      setShowModal(false);
       const receipt = await tx.wait();
-      console.log(receipt)
+      data.setTxHashDispatch("")
     } catch (error) {
       console.log(error)
     }
@@ -110,11 +120,8 @@ const NftCard: FC<Props> = (data) => {
                   <label className="flex flex-col-reverse relative focus group">
       
                     <input type="text" name="address" required
-                        className="border-2 border-black px-4 py-3 leading-9" size={64} onChange={(e) => setMintAddress(e.target.value)}/>
-                    
-                    <span className="text-green-500 absolute text-xl transform -translate-y-3 left-4 transition leading-10 group-focus-within:-translate-y-16">
-                      ENS or Address
-                    </span>
+                        className="border-2 border-black px-4 py-3 leading-9" size={64} onChange={(e) => setMintAddress(e.target.value)}
+                        placeholder="ENS or Address"/>
 
                     <span className="text-red-500 ml-auto leading-10">* Required</span>
                   

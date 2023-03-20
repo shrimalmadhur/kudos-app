@@ -13,19 +13,13 @@ type Props = {
   wallet?: WalletState
 }
 
-const contractAddress = process.env.NEXT_PUBLIC_KUDOS_CONTRACT
-const chainType = process.env.NEXT_PUBLIC_CHAIN
+const contractAddress = process.env.NEXT_PUBLIC_KUDOS_CONTRACT;
+const chainType = process.env.NEXT_PUBLIC_CHAIN;
+
 
 const ListAllNFT: FC<Props> = (data) => {
 
-
-  // const address = data.wallet.accounts[0].address;
-
-  // const chainId = data.wallet.chains[0].id;
-  // let chainType = "mainnet"
-  // if (chainId == '0x5') {
-  //   chainType = 'goerli'
-  // }
+  const [txHash, setTxHash] = useState("")
   const defaultAtta: TokenResponse[] = []
   const [nftData, setNftData] = useState(defaultAtta)
   useEffect(() => {
@@ -40,11 +34,17 @@ const ListAllNFT: FC<Props> = (data) => {
   return (
     <div className='w-full'>
       {
+        txHash
+          ?
+          <div>Transation hash: <a href={txHash} target="_blank">{txHash}</a></div>
+          : <div></div>
+      }
+      {
         nftData
           ? <div className='grid grid-cols-4 gap-4'>{nftData.map(element => {
             return (
               <div className='w-full space-between md:h-auto flex flex-col md:flex-row rounded-full'>
-                <NftCard token={element} wallet={data.wallet}></NftCard>
+                <NftCard token={element} wallet={data.wallet} setTxHashDispatch={setTxHash}></NftCard>
               </div>
             )
           })}</div>
