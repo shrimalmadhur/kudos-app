@@ -15,6 +15,12 @@ type Props = {
   setTxHashDispatch: Dispatch<string>
 }
 
+declare global {
+  interface Window {
+    ethereum: any;
+  }
+}
+
 const contractAddress = process.env.NEXT_PUBLIC_KUDOS_CONTRACT || ""
 const chainType = process.env.NEXT_PUBLIC_CHAIN || ""
 const etherScanURL = process.env.NEXT_PUBLIC_ETHERSCAN_URL;
