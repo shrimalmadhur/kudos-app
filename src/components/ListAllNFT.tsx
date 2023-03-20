@@ -10,7 +10,7 @@ import erc1155abi from '../../artifacts/erc1155-abi.json'
 import NftCard from './NftCard';
 
 type Props = {
-  wallet?: WalletState
+  wallet?: WalletState | undefined | null
 }
 
 const contractAddress = process.env.NEXT_PUBLIC_KUDOS_CONTRACT;

@@ -11,7 +11,7 @@ import { useConnectWallet } from '@web3-onboard/react';
 
 type Props = {
   token: TokenResponse
-  wallet?: WalletState
+  wallet?: WalletState | undefined | null
   setTxHashDispatch: Dispatch<string>
 }
 
