@@ -24,7 +24,10 @@ const NftCard: FC<Props> = (data) => {
   const [mintAddress, setMintAddress] = useState("");
   const [{ wallet, connecting }, connect, disconnect] = useConnectWallet();
 
-  let img = data.token.rawImageUrl?.split("://")
+  let img = data.token.rawImageUrl?.split("://");
+  if (!img) {
+    img = []
+  }
   const finalImg = "https://gateway.pinata.cloud/ipfs/" + img[1];
   const divStyle = {
     backgroundImage: 'url(' + finalImg + ')'
