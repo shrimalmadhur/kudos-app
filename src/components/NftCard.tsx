@@ -63,7 +63,7 @@ const NftCard: FC<Props> = (data) => {
     try {
       let nftContract = new ethers.Contract(contractAddress, erc1155abi, signer);
       const tx = await nftContract["mint(address,uint256)"](address, data.token.tokenId, { gasLimit: 100000, value: ethers.parseEther('0.005') })
-      const txURL = etherScanURL + "/tx/" + tx.hash;
+      const txURL = etherScanURL + "tx/" + tx.hash;
       data.setTxHashDispatch(txURL);
       setShowModal(false);
       const receipt = await tx.wait();
